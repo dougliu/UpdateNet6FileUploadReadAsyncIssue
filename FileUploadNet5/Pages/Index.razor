@@ -1,0 +1,24 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+<InputFile OnChange="@FileLoad" />
+<label>@message</label>
+
+@code{
+    private long maxFileSize = 1024 * 1024 * 15;
+    private string message = String.Empty;
+
+    private async Task FileLoad(InputFileChangeEventArgs e)
+    {
+        var file = (IBrowserFile)e.File;
+
+        if(file != null)
+        {
+            var buffer = new byte[file.Size];
+            var length = await file.OpenReadStream(maxFileSize).ReadAsync(buffer);
+
+            message = "Read " + length + " bytes; File size = " + file.Size;
+        }
+        StateHasChanged();
+    }
+}
